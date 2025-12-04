@@ -5,15 +5,14 @@
     <title>Workshop CRM</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-   <style>
+    <style>
       :root {
-        --bg: #0f172a;
+        --primary: #000000;           /* main action colour */
+        --text-main: #111111;
+        --text-sub: #666666;
+        --border: #dddddd;
+        --bg: #f5f5f5;
         --card-bg: #ffffff;
-        --accent: #2563eb;
-        --accent-soft: #dbeafe;
-        --border-soft: #e2e8f0;
-        --text-main: #0f172a;
-        --text-sub: #64748b;
       }
 
       * {
@@ -22,29 +21,26 @@
 
       body {
         margin: 0;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
-        background: radial-gradient(circle at top, #1d4ed8 0, #020617 55%);
+        background: var(--bg);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         display: flex;
         justify-content: center;
-        padding: 12px;
       }
 
       .app {
         width: 100%;
         max-width: 430px;
         min-height: 100vh;
-        background: var(--card-bg);
-        padding: 16px;
-        border-radius: 20px;
-        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.4);
+        background: #ffffff;
+        padding: 18px;
+        box-sizing: border-box;
       }
 
-      .top-bar {
+      .top-row {
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        margin-bottom: 12px;
+        align-items: center;
+        margin-bottom: 16px;
       }
 
       #appTitle {
@@ -53,120 +49,92 @@
         color: var(--text-main);
       }
 
-      .lang-btn {
+      #langToggle {
         padding: 6px 12px;
         border-radius: 999px;
-        border: 1px solid var(--border-soft);
-        background: #f3f4f6;
+        border: 1px solid var(--border);
+        background: #fafafa;
         font-size: 13px;
         font-weight: 600;
         cursor: pointer;
       }
 
+      /* HOME BUTTONS */
       .home-section {
-        margin-bottom: 12px;
+        margin-bottom: 10px;
       }
 
       .btn {
         width: 100%;
         padding: 16px;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
         font-size: 17px;
         font-weight: 600;
-        border-radius: 14px;
+        border-radius: 12px;
         border: none;
         cursor: pointer;
-        box-shadow: 0 4px 8px rgba(15, 23, 42, 0.2);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
+        transition: 0.15s;
       }
 
-      .btn:active {
-        transform: scale(0.97);
+      .btn-main {
+        background: var(--primary);
+        color: #ffffff;
       }
 
-      .btn-primary {
-        background: linear-gradient(135deg, #2563eb, #1d4ed8);
-        color: white;
+      .btn-main:active {
+        opacity: 0.85;
       }
 
-      .btn-green {
-        background: linear-gradient(135deg, #16a34a, #15803d);
-        color: white;
+      .btn-outline {
+        background: #ffffff;
+        color: var(--text-main);
+        border: 1px solid var(--border);
       }
 
-      .btn-orange {
-        background: linear-gradient(135deg, #f97316, #ea580c);
-        color: white;
-      }
-
-      .btn-purple {
-        background: linear-gradient(135deg, #7c3aed, #6d28d9);
-        color: white;
-      }
-
-      .btn-huge {
-        padding: 22px;
-        font-size: 20px;
-        border-radius: 18px;
-      }
-
-      .button-row {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 12px;
-      }
-
-      .button-row .btn {
-        width: 50%;
-        margin-bottom: 0;
+      .btn-outline:active {
+        background: #f3f3f3;
       }
 
       #screenName {
         text-align: center;
-        margin-top: 4px;
-        margin-bottom: 4px;
-        color: var(--text-sub);
         font-size: 14px;
+        color: var(--text-sub);
+        margin: 4px 0 6px;
       }
 
       .screen {
-        margin-top: 12px;
-        border-top: 1px solid var(--border-soft);
-        padding-top: 12px;
+        margin-top: 6px;
+        border-top: 1px solid var(--border);
+        padding-top: 10px;
       }
 
       h2 {
         font-size: 18px;
-        font-weight: 700;
+        margin: 4px 0 10px;
         color: var(--text-main);
-        margin: 4px 0 8px;
       }
 
       h3 {
         font-size: 15px;
-        font-weight: 600;
+        margin: 10px 0 6px;
         color: var(--text-main);
-        margin: 14px 0 6px;
       }
 
       input,
       select {
         width: 100%;
-        padding: 11px 12px;
-        margin-bottom: 8px;
+        padding: 14px;
         font-size: 15px;
         border-radius: 10px;
-        border: 1px solid var(--border-soft);
-        background: #f9fafb;
+        border: 1px solid var(--border);
+        background: #fafafa;
+        margin-bottom: 8px;
       }
 
       input:focus,
       select:focus {
-        outline: 2px solid var(--accent-soft);
-        border-color: var(--accent);
+        outline: none;
+        border-color: #bbbbbb;
       }
 
       label {
@@ -175,7 +143,7 @@
         display: flex;
         align-items: center;
         gap: 6px;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
       }
 
       .search-input {
@@ -185,21 +153,23 @@
       ul {
         list-style: none;
         padding-left: 0;
-        margin-top: 8px;
+        margin-top: 4px;
       }
 
-      /* Card style for list items */
       li {
-        background: #ffffff;
-        border-radius: 14px;
-        border: 1px solid var(--border-soft);
-        box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08);
+        background: var(--card-bg);
+        border-radius: 12px;
+        border: 1px solid var(--border);
         padding: 10px 12px;
         margin-bottom: 8px;
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
         gap: 8px;
+        transition: 0.1s;
+      }
+
+      li:active {
+        transform: scale(0.98);
       }
 
       .item-main {
@@ -209,15 +179,14 @@
 
       .item-header {
         font-size: 15px;
-        font-weight: 700;
+        font-weight: 600;
         color: var(--text-main);
-        margin-bottom: 2px;
       }
 
       .item-sub {
         font-size: 13px;
         color: var(--text-sub);
-        margin-bottom: 2px;
+        margin-top: 2px;
         word-break: break-word;
       }
 
@@ -230,26 +199,26 @@
 
       .btn-small {
         padding: 5px 10px;
-        border-radius: 999px;
+        border-radius: 8px;
         font-size: 12px;
-        font-weight: 600;
         border: none;
         cursor: pointer;
+        font-weight: 600;
         min-width: 60px;
       }
 
       .btn-edit {
-        background: #0ea5e9;
+        background: #444444;
         color: white;
       }
 
       .btn-delete {
-        background: #ef4444;
+        background: #cc0000;
         color: white;
       }
 
       .btn-whatsapp {
-        background: #22c55e;
+        background: #25d366;
         color: white;
       }
     </style>
@@ -257,78 +226,86 @@
 
   <body>
     <div class="app">
-      <div class="top-bar">
+      <div class="top-row">
         <div id="appTitle" data-i18n="app.title"></div>
-        <button id="langToggle" class="lang-btn">EN</button>
+        <button id="langToggle">EN</button>
       </div>
 
-      <!-- HOME SECTION -->
+      <!-- HOME -->
       <div class="home-section">
+        <!-- MAIN ACTION: ADD JOB -->
         <button
-          class="btn btn-primary btn-huge"
+          class="btn btn-main"
           onclick="goTo('addService')"
           data-i18n="home.addJob"
         ></button>
 
-        <div class="button-row">
-          <button
-            class="btn btn-orange"
-            onclick="goTo('customers')"
-            data-i18n="home.customers"
-          ></button>
+        <!-- SUPPORTING: CUSTOMERS + VEHICLES -->
+        <button
+          class="btn btn-outline"
+          onclick="goTo('customers')"
+          data-i18n="home.customers"
+        ></button>
 
-          <button
-            class="btn btn-purple"
-            onclick="goTo('vehicles')"
-            data-i18n="home.vehicles"
-          ></button>
-        </div>
+        <button
+          class="btn btn-outline"
+          onclick="goTo('vehicles')"
+          data-i18n="home.vehicles"
+        ></button>
 
-        <div class="button-row">
-          <button
-            class="btn btn-green"
-            onclick="goTo('today')"
-            data-i18n="home.today"
-          ></button>
+        <!-- INFO: TODAY + REMINDERS -->
+        <button
+          class="btn btn-outline"
+          onclick="goTo('today')"
+          data-i18n="home.today"
+        ></button>
 
-          <button
-            class="btn btn-purple"
-            onclick="goTo('reminders')"
-            data-i18n="home.reminders"
-          ></button>
-        </div>
+        <button
+          class="btn btn-outline"
+          onclick="goTo('reminders')"
+          data-i18n="home.reminders"
+        ></button>
       </div>
 
       <p id="screenName"></p>
 
-      <!-- CUSTOMERS -->
-      <div id="customersScreen" class="screen" style="display:none;">
+      <!-- CUSTOMERS SCREEN -->
+      <div id="customersScreen" class="screen" style="display: none;">
         <h2 data-i18n="customers.title"></h2>
 
         <form id="customerForm">
-          <input id="custName" data-i18n-placeholder="customers.name" />
-          <input id="custPhone" data-i18n-placeholder="customers.phone" />
-
+          <input
+            id="custName"
+            data-i18n-placeholder="customers.name"
+            required
+          />
+          <input
+            id="custPhone"
+            data-i18n-placeholder="customers.phone"
+            required
+          />
           <label>
             <input id="custWhatsapp" type="checkbox" checked />
             <span data-i18n="customers.whatsapp"></span>
           </label>
-
-          <!-- NEW: NOTES -->
-          <input id="custNotes" data-i18n-placeholder="customers.notes" />
-
-          <button class="btn btn-primary" data-i18n="customers.save"></button>
+          <input
+            id="custNotes"
+            data-i18n-placeholder="customers.notes"
+          />
+          <button type="submit" class="btn btn-main" data-i18n="customers.save"></button>
         </form>
 
         <h3 data-i18n="customers.list"></h3>
-
-        <input id="customerSearch" class="search-input" data-i18n-placeholder="customers.search" />
-
+        <input
+          id="customerSearch"
+          class="search-input"
+          data-i18n-placeholder="customers.search"
+        />
         <ul id="customerList"></ul>
       </div>
 
-      <!-- VEHICLES -->
-      <div id="vehiclesScreen" class="screen" style="display:none;">
+      <!-- VEHICLES SCREEN -->
+      <div id="vehiclesScreen" class="screen" style="display: none;">
         <h2 data-i18n="vehicles.title"></h2>
 
         <form id="vehicleForm">
@@ -341,53 +318,69 @@
             <option value="car">Car</option>
           </select>
 
-          <input id="vehicleModel" data-i18n-placeholder="vehicles.model" />
-          <input id="vehicleNumber" data-i18n-placeholder="vehicles.number" />
+          <input
+            id="vehicleModel"
+            data-i18n-placeholder="vehicles.model"
+            required
+          />
+          <input
+            id="vehicleNumber"
+            data-i18n-placeholder="vehicles.number"
+            required
+          />
+          <input
+            id="vehicleNotes"
+            data-i18n-placeholder="vehicles.notes"
+          />
 
-          <!-- NEW: VEHICLE NOTES -->
-          <input id="vehicleNotes" data-i18n-placeholder="vehicles.notes" />
-
-          <button class="btn btn-primary" data-i18n="vehicles.save"></button>
+          <button type="submit" class="btn btn-main" data-i18n="vehicles.save"></button>
         </form>
 
         <h3 data-i18n="vehicles.list"></h3>
-
-        <input id="vehicleSearch" class="search-input" data-i18n-placeholder="vehicles.search" />
-
+        <input
+          id="vehicleSearch"
+          class="search-input"
+          data-i18n-placeholder="vehicles.search"
+        />
         <ul id="vehicleList"></ul>
       </div>
 
-      <!-- SERVICE -->
-      <div id="serviceScreen" class="screen" style="display:none;">
+      <!-- SERVICE SCREEN -->
+      <div id="serviceScreen" class="screen" style="display: none;">
         <h2 data-i18n="service.title"></h2>
 
         <form id="serviceForm">
           <select id="serviceVehicle"></select>
           <input id="serviceDate" type="date" />
-
-          <input id="serviceDescription" data-i18n-placeholder="service.work" />
-          <input id="serviceAmount" type="number" data-i18n-placeholder="service.amount" />
-
+          <input
+            id="serviceDescription"
+            data-i18n-placeholder="service.work"
+          />
+          <input
+            id="serviceAmount"
+            type="number"
+            data-i18n-placeholder="service.amount"
+          />
           <input id="nextServiceDate" type="date" />
-
-          <!-- NEW: SERVICE NOTES -->
-          <input id="serviceNotes" data-i18n-placeholder="service.notes" />
-
-          <button class="btn btn-primary" data-i18n="service.save"></button>
+          <input
+            id="serviceNotes"
+            data-i18n-placeholder="service.notes"
+          />
+          <button type="submit" class="btn btn-main" data-i18n="service.save"></button>
         </form>
 
         <h3 data-i18n="service.list"></h3>
         <ul id="serviceList"></ul>
       </div>
 
-      <!-- TODAY -->
-      <div id="todayScreen" class="screen" style="display:none;">
+      <!-- TODAY SCREEN -->
+      <div id="todayScreen" class="screen" style="display: none;">
         <h2 data-i18n="today.title"></h2>
         <ul id="todayList"></ul>
       </div>
 
-      <!-- REMINDERS -->
-      <div id="remindersScreen" class="screen" style="display:none;">
+      <!-- REMINDERS SCREEN -->
+      <div id="remindersScreen" class="screen" style="display: none;">
         <h2 data-i18n="reminders.title"></h2>
         <ul id="remindersList"></ul>
       </div>
