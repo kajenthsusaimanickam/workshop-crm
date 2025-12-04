@@ -5,14 +5,12 @@ const translations = {
   en: {
     "app.title": "Workshop CRM",
 
-    // Home buttons
     "home.addJob": "➕ Add Job / Service",
     "home.customers": "👤 Customers",
     "home.vehicles": "🚗 Vehicles",
     "home.today": "📅 Today's Jobs",
     "home.reminders": "🔔 Service Reminders",
 
-    // Screens
     "screen.home": "Home",
     "screen.customers": "Customers",
     "screen.vehicles": "Vehicles",
@@ -20,53 +18,45 @@ const translations = {
     "screen.today": "Today's Jobs",
     "screen.reminders": "Reminders",
 
-    // Customers
     "customers.title": "Customers",
-    "customers.name": "Customer Name",
-    "customers.phone": "Phone Number",
+    "customers.name": "Customer name",
+    "customers.phone": "Phone number",
     "customers.whatsapp": "Has WhatsApp",
     "customers.notes": "Notes (optional)",
     "customers.save": "Save Customer",
     "customers.list": "Saved Customers",
     "customers.search": "Search customers...",
 
-    // Vehicles
     "vehicles.title": "Vehicles",
-    "vehicles.customer": "Select Customer",
-    "vehicles.type": "Vehicle Type",
+    "vehicles.customer": "Customer",
+    "vehicles.type": "Vehicle type",
     "vehicles.model": "Model (e.g. Pulsar 150)",
-    "vehicles.number": "Number Plate (e.g. TN-10-AB-1234)",
-    "vehicles.notes": "Vehicle Notes (optional)",
+    "vehicles.number": "Number plate (e.g. TN-10-AB-1234)",
+    "vehicles.notes": "Vehicle notes (optional)",
     "vehicles.save": "Save Vehicle",
     "vehicles.list": "Saved Vehicles",
     "vehicles.search": "Search vehicles...",
 
-    // Service
     "service.title": "Add Job / Service",
-    "service.work": "Work done (e.g. Oil Change)",
+    "service.work": "Work done (e.g. Oil change)",
     "service.amount": "Amount",
-    "service.notes": "Service Notes (optional)",
+    "service.notes": "Service notes (optional)",
     "service.save": "Save Service",
     "service.list": "Saved Services",
 
-    // Today
     "today.title": "Today's Jobs",
-
-    // Reminders
     "reminders.title": "Next Service Reminders",
   },
 
   ta: {
     "app.title": "வர்க்ஷாப் CRM",
 
-    // Home buttons
     "home.addJob": "➕ புதிய வேலை / சர்வீஸ்",
     "home.customers": "👤 கஸ்டமர்கள்",
     "home.vehicles": "🚗 வாகனங்கள்",
     "home.today": "📅 இன்றைய வேலைகள்",
     "home.reminders": "🔔 ரிமைண்டர்கள்",
 
-    // Screens
     "screen.home": "முகப்பு",
     "screen.customers": "கஸ்டமர்கள்",
     "screen.vehicles": "வாகனங்கள்",
@@ -74,17 +64,15 @@ const translations = {
     "screen.today": "இன்றைய வேலைகள்",
     "screen.reminders": "ரிமைண்டர்கள்",
 
-    // Customers
     "customers.title": "கஸ்டமர்கள்",
     "customers.name": "பெயர்",
     "customers.phone": "போன் நம்பர்",
     "customers.whatsapp": "வாட்ஸ்அப் இருக்கா",
-    "customers.notes": "குறிப்புகள் (ஆப்ஷனல்)",
+    "customers.notes": "குறிப்பு (ஆப்ஷனல்)",
     "customers.save": "கஸ்டமர் சேமிக்க",
     "customers.list": "சேமித்த கஸ்டமர்கள்",
     "customers.search": "கஸ்டமரை தேடு...",
 
-    // Vehicles
     "vehicles.title": "வாகனங்கள்",
     "vehicles.customer": "கஸ்டமர்",
     "vehicles.type": "வகை",
@@ -95,49 +83,40 @@ const translations = {
     "vehicles.list": "சேமித்த வாகனங்கள்",
     "vehicles.search": "வாகனத்தை தேடு...",
 
-    // Service
-    "service.title": "சர்வீஸ் / வேலை",
+    "service.title": "வேலை / சர்வீஸ்",
     "service.work": "செய்த வேலை",
     "service.amount": "அமவுண்ட்",
     "service.notes": "குறிப்பு (ஆப்ஷனல்)",
     "service.save": "வேலை சேமிக்க",
     "service.list": "சேமித்த வேலைகள்",
 
-    // Today
     "today.title": "இன்றைய வேலைகள்",
-
-    // Reminders
-    "reminders.title": "அடுத்த சர்வீஸ் நினைவூட்டல்கள்",
+    "reminders.title": "அடுத்த சர்வீஸ் ரிமைண்டர்கள்",
   },
 };
 
 let currentLang = localStorage.getItem("crm_lang") || "en";
 let currentScreen = "home";
 
-// Apply translations
 function applyTranslations() {
-  // Static text elements
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
     const txt = translations[currentLang]?.[key];
     if (txt) el.textContent = txt;
   });
 
-  // Placeholder translations
   document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
     const key = el.getAttribute("data-i18n-placeholder");
     const txt = translations[currentLang]?.[key];
     if (txt) el.placeholder = txt;
   });
 
-  // Screen name
   const screenNameEl = document.getElementById("screenName");
   if (screenNameEl) {
     const key = "screen." + currentScreen;
     screenNameEl.textContent = translations[currentLang]?.[key] || "";
   }
 
-  // Language button
   const langBtn = document.getElementById("langToggle");
   if (langBtn) langBtn.textContent = currentLang === "en" ? "EN" : "தமிழ்";
 }
@@ -154,10 +133,14 @@ function setLanguage(lang) {
 function loadData() {
   const saved = localStorage.getItem("workshop_data");
   if (!saved) return { customers: [], vehicles: [], services: [] };
-
   try {
-    return JSON.parse(saved);
-  } catch (e) {
+    const parsed = JSON.parse(saved);
+    return {
+      customers: parsed.customers || [],
+      vehicles: parsed.vehicles || [],
+      services: parsed.services || [],
+    };
+  } catch {
     return { customers: [], vehicles: [], services: [] };
   }
 }
@@ -171,14 +154,11 @@ function saveData() {
 // --------------------------------------
 // 2. DOM ELEMENTS
 // --------------------------------------
-
-// Screens
 const customersScreen = document.getElementById("customersScreen");
 const vehiclesScreen = document.getElementById("vehiclesScreen");
 const serviceScreen = document.getElementById("serviceScreen");
 const todayScreen = document.getElementById("todayScreen");
 const remindersScreen = document.getElementById("remindersScreen");
-const screenNameEl = document.getElementById("screenName");
 
 // Customers
 const customerForm = document.getElementById("customerForm");
@@ -209,7 +189,7 @@ const nextServiceDateInput = document.getElementById("nextServiceDate");
 const serviceNotesInput = document.getElementById("serviceNotes");
 const serviceListEl = document.getElementById("serviceList");
 
-// Today & Reminders
+// Today / reminders
 const todayListEl = document.getElementById("todayList");
 const remindersListEl = document.getElementById("remindersList");
 
@@ -261,11 +241,10 @@ function goTo(screen) {
 
   applyTranslations();
 }
+
 // --------------------------------------
 // 4. CUSTOMERS
 // --------------------------------------
-
-// Create Customer
 customerForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -275,7 +254,7 @@ customerForm.addEventListener("submit", (e) => {
   const notes = custNotesInput.value.trim();
 
   if (!name || !phone) {
-    alert("Name & Phone are required.");
+    alert("Name & phone required");
     return;
   }
 
@@ -290,20 +269,21 @@ customerForm.addEventListener("submit", (e) => {
   data.customers.push(customer);
   saveData();
 
-  // Reset
   custNameInput.value = "";
   custPhoneInput.value = "";
   custWhatsappInput.checked = true;
   custNotesInput.value = "";
 
   renderCustomerList();
+  renderVehicleCustomerOptions();
 });
 
-// Customer List
+customerSearchInput.addEventListener("input", renderCustomerList);
+
 function renderCustomerList() {
   customerListEl.innerHTML = "";
 
-  let search = customerSearchInput.value.trim().toLowerCase();
+  const search = customerSearchInput.value.trim().toLowerCase();
 
   const list = data.customers.filter((c) => {
     return (
@@ -317,14 +297,12 @@ function renderCustomerList() {
     const li = document.createElement("li");
     li.textContent = "No customers found.";
     li.style.justifyContent = "center";
-    li.style.boxShadow = "none";
     customerListEl.appendChild(li);
     return;
   }
 
   list.forEach((c) => {
     const li = document.createElement("li");
-
     li.innerHTML = `
       <div class="item-main">
         <div class="item-header">${c.name}</div>
@@ -336,60 +314,51 @@ function renderCustomerList() {
         <button class="btn-small btn-delete" onclick="deleteCustomer('${c.id}')">Delete</button>
       </div>
     `;
-
     customerListEl.appendChild(li);
   });
 }
 
-
-// Search update
-customerSearchInput.addEventListener("input", renderCustomerList);
-
-// Edit Customer
 function editCustomer(id) {
   const c = data.customers.find((x) => x.id === id);
   if (!c) return;
 
-  const newName = prompt("Edit Name:", c.name);
+  const newName = prompt("Edit name:", c.name);
   if (newName === null) return;
 
-  const newPhone = prompt("Edit Phone:", c.phone);
+  const newPhone = prompt("Edit phone:", c.phone);
   if (newPhone === null) return;
 
-  const newNotes = prompt("Edit Notes:", c.notes || "");
+  const newNotes = prompt("Edit notes:", c.notes || "");
   if (newNotes === null) return;
 
   c.name = newName.trim();
   c.phone = newPhone.trim();
   c.notes = newNotes.trim();
-
-  saveData();
-  renderCustomerList();
-}
-
-// Delete Customer
-function deleteCustomer(id) {
-  if (!confirm("Delete this customer?")) return;
-
-  // Remove linked vehicles & services
-  data.vehicles = data.vehicles.filter((v) => v.customerId !== id);
-  data.services = data.services.filter((s) => {
-    const v = data.vehicles.find((x) => x.id === s.vehicleId);
-    return v !== undefined;
-  });
-
-  data.customers = data.customers.filter((c) => c.id !== id);
   saveData();
 
   renderCustomerList();
   renderVehicleList();
   renderServiceList();
 }
+
+function deleteCustomer(id) {
+  if (!confirm("Delete this customer and linked data?")) return;
+
+  const vehicleIds = data.vehicles.filter(v => v.customerId === id).map(v => v.id);
+  data.services = data.services.filter(s => !vehicleIds.includes(s.vehicleId));
+  data.vehicles = data.vehicles.filter(v => v.customerId !== id);
+  data.customers = data.customers.filter(c => c.id !== id);
+
+  saveData();
+  renderCustomerList();
+  renderVehicleList();
+  renderServiceList();
+  renderRemindersList();
+}
+
 // --------------------------------------
 // 5. VEHICLES
 // --------------------------------------
-
-// Populate customer dropdown
 function renderVehicleCustomerOptions() {
   vehicleCustomerSelect.innerHTML = "";
 
@@ -399,14 +368,13 @@ function renderVehicleCustomerOptions() {
   vehicleCustomerSelect.appendChild(opt);
 
   data.customers.forEach((c) => {
-    const op = document.createElement("option");
-    op.value = c.id;
-    op.textContent = `${c.name} (${c.phone})`;
-    vehicleCustomerSelect.appendChild(op);
+    const o = document.createElement("option");
+    o.value = c.id;
+    o.textContent = `${c.name} (${c.phone})`;
+    vehicleCustomerSelect.appendChild(o);
   });
 }
 
-// Add Vehicle
 vehicleForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -417,7 +385,7 @@ vehicleForm.addEventListener("submit", (e) => {
   const notes = vehicleNotesInput.value.trim();
 
   if (!customerId || !model || !numberPlate) {
-    alert("All fields are required.");
+    alert("Fill all fields");
     return;
   }
 
@@ -443,17 +411,17 @@ vehicleForm.addEventListener("submit", (e) => {
   renderServiceVehicleOptions();
 });
 
-// Render Vehicle List
+vehicleSearchInput.addEventListener("input", renderVehicleList);
+
 function renderVehicleList() {
   vehicleListEl.innerHTML = "";
 
-  let search = vehicleSearchInput.value.trim().toLowerCase();
+  const search = vehicleSearchInput.value.trim().toLowerCase();
 
   const list = data.vehicles.filter((v) => {
-    const customer = data.customers.find((c) => c.id === v.customerId);
-    const name = customer ? customer.name.toLowerCase() : "";
-    const notes = v.notes ? v.notes.toLowerCase() : "";
-
+    const cust = data.customers.find((c) => c.id === v.customerId);
+    const name = cust ? cust.name.toLowerCase() : "";
+    const notes = (v.notes || "").toLowerCase();
     return (
       v.model.toLowerCase().includes(search) ||
       v.numberPlate.toLowerCase().includes(search) ||
@@ -466,19 +434,17 @@ function renderVehicleList() {
     const li = document.createElement("li");
     li.textContent = "No vehicles found.";
     li.style.justifyContent = "center";
-    li.style.boxShadow = "none";
     vehicleListEl.appendChild(li);
     return;
   }
 
   list.forEach((v) => {
-    const customer = data.customers.find((c) => c.id === v.customerId);
-
+    const cust = data.customers.find((c) => c.id === v.customerId);
     const li = document.createElement("li");
     li.innerHTML = `
       <div class="item-main">
         <div class="item-header">${v.model} (${v.numberPlate})</div>
-        <div class="item-sub">👤 ${customer ? customer.name : "Unknown"} • 🚘 ${v.type.toUpperCase()}</div>
+        <div class="item-sub">👤 ${cust ? cust.name : "Unknown"} • ${v.type.toUpperCase()}</div>
         ${v.notes ? `<div class="item-sub">📝 ${v.notes}</div>` : ""}
       </div>
       <div class="item-actions">
@@ -486,16 +452,10 @@ function renderVehicleList() {
         <button class="btn-small btn-delete" onclick="deleteVehicle('${v.id}')">Delete</button>
       </div>
     `;
-
     vehicleListEl.appendChild(li);
   });
 }
 
-
-// Search vehicle
-vehicleSearchInput.addEventListener("input", renderVehicleList);
-
-// Edit Vehicle
 function editVehicle(id) {
   const v = data.vehicles.find((x) => x.id === id);
   if (!v) return;
@@ -503,70 +463,63 @@ function editVehicle(id) {
   const newModel = prompt("Edit model:", v.model);
   if (newModel === null) return;
 
-  const newNumber = prompt("Edit number plate:", v.numberPlate);
-  if (newNumber === null) return;
+  const newPlate = prompt("Edit number plate:", v.numberPlate);
+  if (newPlate === null) return;
 
   const newNotes = prompt("Edit notes:", v.notes || "");
   if (newNotes === null) return;
 
   v.model = newModel.trim();
-  v.numberPlate = newNumber.trim();
+  v.numberPlate = newPlate.trim();
   v.notes = newNotes.trim();
-
   saveData();
+
   renderVehicleList();
+  renderServiceList();
   renderServiceVehicleOptions();
 }
 
-// Delete Vehicle
 function deleteVehicle(id) {
-  if (!confirm("Delete this vehicle?")) return;
+  if (!confirm("Delete this vehicle and its services?")) return;
 
-  // Remove services linked with the vehicle
   data.services = data.services.filter((s) => s.vehicleId !== id);
-
   data.vehicles = data.vehicles.filter((v) => v.id !== id);
-  saveData();
 
+  saveData();
   renderVehicleList();
   renderServiceList();
   renderRemindersList();
 }
 
-// Populate dropdown in service screen
+// --------------------------------------
+// 6. SERVICES / JOBS
+// --------------------------------------
 function renderServiceVehicleOptions() {
   serviceVehicleSelect.innerHTML = "";
 
   const opt = document.createElement("option");
   opt.value = "";
-  opt.textContent = "Select Vehicle";
+  opt.textContent = "Select vehicle";
   serviceVehicleSelect.appendChild(opt);
 
   data.vehicles.forEach((v) => {
-    const customer = data.customers.find((c) => c.id === v.customerId);
-
+    const cust = data.customers.find((c) => c.id === v.customerId);
     const o = document.createElement("option");
     o.value = v.id;
-    o.textContent = `${v.model} (${v.numberPlate}) - ${customer ? customer.name : "Unknown"}`;
-
+    o.textContent = `${v.model} (${v.numberPlate}) - ${cust ? cust.name : "Unknown"}`;
     serviceVehicleSelect.appendChild(o);
   });
 }
 
-// Auto-fill today's dates
 function setTodayDates() {
-  const today = new Date().toISOString().split("T")[0];
-  serviceDateInput.value = today;
+  const todayStr = new Date().toISOString().split("T")[0];
+  serviceDateInput.value = todayStr;
 
   const next = new Date();
   next.setDate(next.getDate() + 90);
   nextServiceDateInput.value = next.toISOString().split("T")[0];
 }
-// --------------------------------------
-// 6. SERVICES (JOBS)
-// --------------------------------------
 
-// Add Service / Job
 serviceForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -577,8 +530,8 @@ serviceForm.addEventListener("submit", (e) => {
   const nextDate = nextServiceDateInput.value;
   const notes = serviceNotesInput.value.trim();
 
-  if (!vehicleId || !description || !amount) {
-    alert("All fields are required.");
+  if (!vehicleId || !date || !description || !amount || !nextDate) {
+    alert("Fill all fields");
     return;
   }
 
@@ -595,15 +548,16 @@ serviceForm.addEventListener("submit", (e) => {
   data.services.push(service);
   saveData();
 
-  // Reset
   serviceDescInput.value = "";
   serviceAmountInput.value = "";
   serviceNotesInput.value = "";
+  setTodayDates();
 
   renderServiceList();
+  renderTodayList();
+  renderRemindersList();
 });
 
-// Render Service List
 function renderServiceList() {
   serviceListEl.innerHTML = "";
 
@@ -611,21 +565,20 @@ function renderServiceList() {
     const li = document.createElement("li");
     li.textContent = "No services yet.";
     li.style.justifyContent = "center";
-    li.style.boxShadow = "none";
     serviceListEl.appendChild(li);
     return;
   }
 
   data.services.forEach((s) => {
-    const vehicle = data.vehicles.find((v) => v.id === s.vehicleId);
-    if (!vehicle) return;
-    const customer = data.customers.find((c) => c.id === vehicle.customerId);
+    const v = data.vehicles.find((x) => x.id === s.vehicleId);
+    if (!v) return;
+    const c = data.customers.find((x) => x.id === v.customerId);
 
     const li = document.createElement("li");
     li.innerHTML = `
       <div class="item-main">
-        <div class="item-header">${vehicle.model} (${vehicle.numberPlate})</div>
-        <div class="item-sub">📆 ${s.date} • 👤 ${customer ? customer.name : "Unknown"}</div>
+        <div class="item-header">${v.model} (${v.numberPlate})</div>
+        <div class="item-sub">📆 ${s.date} • 👤 ${c ? c.name : "Unknown"}</div>
         <div class="item-sub">🛠️ ${s.description} — ₹${s.amount}</div>
         ${s.notes ? `<div class="item-sub">📝 ${s.notes}</div>` : ""}
       </div>
@@ -638,34 +591,31 @@ function renderServiceList() {
   });
 }
 
-
-// Edit Service
 function editService(id) {
   const s = data.services.find((x) => x.id === id);
   if (!s) return;
 
-  const newDesc = prompt("Edit Work Done:", s.description);
+  const newDesc = prompt("Edit work:", s.description);
   if (newDesc === null) return;
 
-  const newAmount = prompt("Edit Amount:", s.amount);
-  if (newAmount === null) return;
+  const newAmt = prompt("Edit amount:", s.amount);
+  if (newAmt === null) return;
 
-  const newNotes = prompt("Edit Notes:", s.notes || "");
+  const newNotes = prompt("Edit notes:", s.notes || "");
   if (newNotes === null) return;
 
   s.description = newDesc.trim();
-  s.amount = Number(newAmount);
+  s.amount = Number(newAmt);
   s.notes = newNotes.trim();
-
   saveData();
+
   renderServiceList();
   renderTodayList();
   renderRemindersList();
 }
 
-// Delete Service
 function deleteService(id) {
-  if (!confirm("Delete this job?")) return;
+  if (!confirm("Delete this service?")) return;
 
   data.services = data.services.filter((s) => s.id !== id);
   saveData();
@@ -681,27 +631,26 @@ function deleteService(id) {
 function renderTodayList() {
   todayListEl.innerHTML = "";
 
-  const today = new Date().toISOString().split("T")[0];
-  const list = data.services.filter((s) => s.date === today);
+  const todayStr = new Date().toISOString().split("T")[0];
+  const list = data.services.filter((s) => s.date === todayStr);
 
   if (list.length === 0) {
     const li = document.createElement("li");
     li.textContent = "No jobs today.";
     li.style.justifyContent = "center";
-    li.style.boxShadow = "none";
     todayListEl.appendChild(li);
     return;
   }
 
   list.forEach((s) => {
-    const vehicle = data.vehicles.find((v) => v.id === s.vehicleId);
-    const customer = data.customers.find((c) => c.id === vehicle.customerId);
+    const v = data.vehicles.find((x) => x.id === s.vehicleId);
+    const c = v ? data.customers.find((x) => x.id === v.customerId) : null;
 
     const li = document.createElement("li");
     li.innerHTML = `
       <div class="item-main">
-        <div class="item-header">${vehicle.model} (${vehicle.numberPlate})</div>
-        <div class="item-sub">👤 ${customer.name}</div>
+        <div class="item-header">${v ? `${v.model} (${v.numberPlate})` : "Unknown vehicle"}</div>
+        <div class="item-sub">👤 ${c ? c.name : "Unknown customer"}</div>
         <div class="item-sub">🛠️ ${s.description} — ₹${s.amount}</div>
         ${s.notes ? `<div class="item-sub">📝 ${s.notes}</div>` : ""}
       </div>
@@ -710,9 +659,8 @@ function renderTodayList() {
   });
 }
 
-
 // --------------------------------------
-// 8. REMINDERS
+// 8. REMINDERS + WHATSAPP
 // --------------------------------------
 function renderRemindersList() {
   remindersListEl.innerHTML = "";
@@ -733,22 +681,21 @@ function renderRemindersList() {
     const li = document.createElement("li");
     li.textContent = "No upcoming reminders.";
     li.style.justifyContent = "center";
-    li.style.boxShadow = "none";
     remindersListEl.appendChild(li);
     return;
   }
 
   list.forEach((s) => {
-    const vehicle = data.vehicles.find((v) => v.id === s.vehicleId);
-    const customer = data.customers.find((c) => c.id === vehicle.customerId);
+    const v = data.vehicles.find((x) => x.id === s.vehicleId);
+    const c = v ? data.customers.find((x) => x.id === v.customerId) : null;
+    if (!v || !c) return;
 
     const li = document.createElement("li");
-
     li.innerHTML = `
       <div class="item-main">
-        <div class="item-header">${vehicle.model} (${vehicle.numberPlate})</div>
+        <div class="item-header">${v.model} (${v.numberPlate})</div>
         <div class="item-sub">📅 Due: ${s.nextServiceDate}</div>
-        <div class="item-sub">👤 ${customer.name}</div>
+        <div class="item-sub">👤 ${c.name}</div>
       </div>
       <div class="item-actions">
         <button class="btn-small btn-whatsapp">WhatsApp</button>
@@ -756,29 +703,26 @@ function renderRemindersList() {
     `;
 
     const btn = li.querySelector(".btn-whatsapp");
-    btn.onclick = () => openWhatsApp(customer, vehicle, s);
+    btn.onclick = () => openWhatsApp(c, v, s);
 
     remindersListEl.appendChild(li);
   });
 }
 
-
-// WhatsApp message
 function openWhatsApp(customer, vehicle, service) {
   const phone = customer.phone.replace(/\D/g, "");
+  if (!phone) {
+    alert("No valid phone number");
+    return;
+  }
 
-  const msg = `Hi ${customer.name}, reminder from your workshop: 
-Your ${vehicle.model} (${vehicle.numberPlate}) is due for service on ${service.nextServiceDate}. 
-Reply to book your service.`;
-
-  const url =
-    "https://wa.me/91" + phone + "?text=" + encodeURIComponent(msg);
-
+  const msg = `Hi ${customer.name}, reminder from your workshop: your ${vehicle.model} (${vehicle.numberPlate}) is due for service on ${service.nextServiceDate}. Please reply to book your slot.`;
+  const url = `https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`;
   window.open(url, "_blank");
 }
 
 // --------------------------------------
-// 9. INITIAL CALLS
+// 9. INITIAL RENDER
 // --------------------------------------
 applyTranslations();
 renderCustomerList();
