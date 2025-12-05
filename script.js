@@ -469,7 +469,7 @@ function renderCustomerHistory() {
   list.innerHTML = data.services
   .slice()
   .sort((a, b) => {
-    if (b.date === a.date) {
+    if (a.date === b.date) {
       return b.id.localeCompare(a.id); // newest job of that day first
     }
     return b.date.localeCompare(a.date);
