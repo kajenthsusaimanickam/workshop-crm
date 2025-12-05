@@ -142,16 +142,27 @@ function t(key) {
 }
 
 function saveData() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (e) {
+    console.error("Error saving data", e);
+  }
 }
 
 function loadData() {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return;
   try {
-    data = JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === "object") {
+      data = {
+        customers: parsed.customers || [],
+        vehicles: parsed.vehicles || [],
+        services: parsed.services || []
+      };
+    }
   } catch (e) {
-    // ignore broken data
+    console.warn("Invalid stored data, using empty state");
   }
 }
 
@@ -172,11 +183,11 @@ function applyLanguage() {
   document.getElementById("langToggle").textContent =
     currentLang === "en" ? "TA" : "EN";
 
-// Home buttons with emojis
-document.getElementById("btnHomeAddJob").textContent = "🧰 " + t("btnAddJob");
-document.getElementById("btnHomeCustomers").textContent = "👤 " + t("btnCustomers");
-document.getElementById("btnHomeToday").textContent = "📅 " + t("btnToday");
-document.getElementById("btnHomeReminders").textContent = "🔔 " + t("btnReminders");
+  // Home buttons with emojis
+  document.getElementById("btnHomeAddJob").textContent = "🧰 " + t("btnAddJob");
+  document.getElementById("btnHomeCustomers").textContent = "👤 " + t("btnCustomers");
+  document.getElementById("btnHomeToday").textContent = "📅 " + t("btnToday");
+  document.getElementById("btnHomeReminders").textContent = "🔔 " + t("btnReminders");
 
   // section titles with emojis
   document.getElementById("customersTitle").textContent =
@@ -239,12 +250,6 @@ document.getElementById("btnHomeReminders").textContent = "🔔 " + t("btnRemind
   document.getElementById("serviceVehicleSearch").placeholder =
     t("serviceVehicleSearch");
   document.getElementById("serviceSaveBtn").textContent = t("serviceSave");
-
-  // other titles
-  document.getElementById("todayTitle").textContent =
-    "📅 " + t("todayTitle");
-  document.getElementById("remindersTitle").textContent =
-    "🔔 " + t("remindersTitle");
 }
 
 // ================== NAVIGATION ==================
@@ -455,6 +460,7 @@ function renderCustomerHistory() {
   `;
 
   const vehiclesById = indexById(data.vehicles);
+  const customersById = indexById(data.customers);
 
   const jobs = data.services.filter((s) => {
     const v = vehiclesById[s.vehicleId];
@@ -466,30 +472,30 @@ function renderCustomerHistory() {
     return;
   }
 
-  list.innerHTML = data.services
-  .slice()
-  .sort((a, b) => {
-    if (a.date === b.date) {
-      return b.id.localeCompare(a.id); // newest job of that day first
-    }
-    return b.date.localeCompare(a.date);
-  })
-  .map((s) => {
-    const v = vehicles[s.vehicleId];
-    const c = v ? customers[v.customerId] : null;
-    const vehicleText = v
-      ? `${v.number} (${v.model})`
-      : "Unknown vehicle";
-    const custText = c
-      ? `${c.name} - ${c.phone}`
-      : "Unknown customer";
+  list.innerHTML = jobs
+    .slice()
+    .sort((a, b) => {
+      if (a.date === b.date) {
+        return b.id.localeCompare(a.id); // newest of that day first
+      }
+      return b.date.localeCompare(a.date); // newest date first
+    })
+    .map((s) => {
+      const v = vehiclesById[s.vehicleId];
+      const cust = v ? customersById[v.customerId] : null;
+      const vehicleText = v
+        ? `${v.number} (${v.model})`
+        : "Unknown vehicle";
+      const custText = cust
+        ? `${cust.name} - ${cust.phone}`
+        : "Unknown customer";
 
-    return `
+      return `
       <li>
         <div class="item-main">
           <div class="item-header">${vehicleText}</div>
           <div class="item-sub">${custText}</div>
-          <div class="item-sub">Job: ${s.date} | Next: ${s.nextDate}</div>
+          <div class="item-sub">Job: ${s.date}${s.nextDate ? " | Next: " + s.nextDate : ""}</div>
           ${
             s.description
               ? `<div class="item-sub">${s.description}</div>`
@@ -502,11 +508,13 @@ function renderCustomerHistory() {
               ? `<div class="item-sub">₹${s.amount}</div>`
               : ""
           }
+          <button class="btn-small btn-edit" onclick="editJob('${s.id}')">
+            Edit
+          </button>
         </div>
       </li>`;
-  })
-  .join("");
-
+    })
+    .join("");
 }
 
 // ================== VEHICLES ==================
@@ -619,8 +627,10 @@ function setupServiceForm() {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
+    const todayInner = getToday();
+
     const vehicleId = document.getElementById("serviceVehicle").value;
-    const date = document.getElementById("serviceDate").value || today;
+    const date = document.getElementById("serviceDate").value || todayInner;
     const desc = document
       .getElementById("serviceDescription")
       .value.trim();
@@ -659,8 +669,8 @@ function setupServiceForm() {
 
     saveData();
     form.reset();
-    document.getElementById("serviceDate").value = today;
-    document.getElementById("nextServiceDate").value = today;
+    document.getElementById("serviceDate").value = todayInner;
+    document.getElementById("nextServiceDate").value = todayInner;
 
     renderServices();
     renderReminders();
@@ -732,7 +742,7 @@ function renderServices() {
           <div class="item-main">
             <div class="item-header">${vehicleText}</div>
             <div class="item-sub">${custText}</div>
-            <div class="item-sub">Job: ${s.date} | Next: ${s.nextDate}</div>
+            <div class="item-sub">Job: ${s.date}${s.nextDate ? " | Next: " + s.nextDate : ""}</div>
             ${
               s.description
                 ? `<div class="item-sub">${s.description}</div>`
@@ -807,7 +817,7 @@ function renderToday() {
     .join("");
 }
 
-// OPTION A: show only today + future reminders
+// show only today + future reminders
 function renderReminders() {
   const list = document.getElementById("remindersList");
   const today = getToday();
@@ -912,7 +922,7 @@ function handleGlobalSearch() {
     results
       .map((s) => {
         const v = vehicles[s.vehicleId];
-        const c = customers[v.customerId];
+        const c = v ? customers[v.customerId] : null;
         const vehicleText = v
           ? `${v.number} (${v.model})`
           : "Unknown vehicle";
@@ -924,7 +934,7 @@ function handleGlobalSearch() {
             <div class="item-main">
               <div class="item-header">${vehicleText}</div>
               <div class="item-sub">${custText}</div>
-              <div class="item-sub">Job: ${s.date} | Next: ${s.nextDate}</div>
+              <div class="item-sub">Job: ${s.date}${s.nextDate ? " | Next: " + s.nextDate : ""}</div>
               ${
                 s.description
                   ? `<div class="item-sub">${s.description}</div>`
@@ -948,8 +958,18 @@ function handleGlobalSearch() {
 function sendWhatsAppReminder(phone, name, vehicle, date) {
   if (!phone) return;
   const cleanPhone = phone.replace(/\D/g, ""); // keep digits only
+
+  let finalNumber = cleanPhone;
+  if (cleanPhone.length === 10) {
+    // assume normal Indian mobile
+    finalNumber = "91" + cleanPhone;
+  } else if (cleanPhone.startsWith("91") && cleanPhone.length > 10) {
+    // already has country code, keep as is
+    finalNumber = cleanPhone;
+  }
+
   const msg = `Hello ${name}, your next service is due for vehicle ${vehicle} on ${date}.`;
-  const url = `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(msg)}`;
+  const url = `https://wa.me/${finalNumber}?text=${encodeURIComponent(msg)}`;
   window.open(url, "_blank");
 }
 
@@ -1036,4 +1056,11 @@ function init() {
   });
 }
 
+// expose functions used in inline onclick
+window.openCustomerDetail = openCustomerDetail;
+window.openCustomerHistory = openCustomerHistory;
+window.editJob = editJob;
+window.sendWhatsAppReminder = sendWhatsAppReminder;
+
 document.addEventListener("DOMContentLoaded", init);
+
