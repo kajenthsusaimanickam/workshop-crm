@@ -109,6 +109,11 @@
         color: #fff;
       }
 
+      .btn-delete {
+        background: #e53935;
+        color: #fff;
+      }
+
       #screenName {
         text-align: center;
         font-size: 14px;
@@ -246,11 +251,7 @@
       <!-- Global Search Bar -->
       <div id="globalSearchBar">
         <div class="field-row">
-          <input
-            id="globalSearchInput"
-            type="text"
-            autocomplete="off"
-          />
+          <input id="globalSearchInput" type="text" autocomplete="off" />
         </div>
         <div class="field-row">
           <label id="globalSearchDateLabel" for="globalSearchDate"></label>
@@ -258,7 +259,7 @@
         </div>
       </div>
 
-      <!-- Global Search Results -->
+      <!-- Global Search Results (HISTORY AREA) -->
       <div id="searchResults" style="display:none;"></div>
 
       <!-- HOME -->
@@ -325,7 +326,7 @@
         <button class="btn btn-outline" id="historyBackBtn">Back</button>
       </div>
 
-      <!-- VEHICLES SCREEN (only via customer detail) -->
+      <!-- VEHICLES SCREEN -->
       <div id="vehiclesScreen" class="screen" style="display:none;">
         <h2 id="vehiclesTitle"></h2>
 
@@ -351,30 +352,28 @@
         <ul id="vehicleList"></ul>
       </div>
 
-      <!-- SERVICE SCREEN -->
+      <!-- SERVICE / QUICK JOB SCREEN (ONLY FORM) -->
       <div id="serviceScreen" class="screen" style="display:none;">
         <h2 id="serviceTitle"></h2>
 
         <form id="serviceForm">
-  <!-- NEW: search box for vehicle -->
-  <input
-    id="serviceVehicleSearch"
-    placeholder="Search vehicle no. / customer"
-  />
+          <label id="serviceDateLabel" for="serviceDate"></label>
+          <input id="serviceDate" type="date" />
 
-  <select id="serviceVehicle"></select>
+          <input id="serviceVehicleNumber" />
+          <input id="serviceVehicleModel" />
 
-  <input id="serviceDate" type="date" />
-  <input id="serviceDescription" />
-  <input id="serviceAmount" type="number" />
-  <input id="nextServiceDate" type="date" />
-  <input id="serviceNotes" />
-  <button type="submit" class="btn btn-main" id="serviceSaveBtn"></button>
-</form>
+          <input id="serviceDescription" />
+          <input id="serviceAmount" type="number" />
 
+          <label id="nextServiceDateLabel" for="nextServiceDate"></label>
+          <input id="nextServiceDate" type="date" />
 
-        <h3 id="serviceListTitle"></h3>
-        <ul id="serviceList"></ul>
+          <input id="serviceCustomerName" />
+          <input id="serviceCustomerPhone" />
+
+          <button type="submit" class="btn btn-main" id="serviceSaveBtn"></button>
+        </form>
       </div>
 
       <!-- TODAY SCREEN -->
